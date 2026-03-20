@@ -163,6 +163,14 @@ void SettingsManager::loadSettings()
     loadProxySettings();
     applyProxySettings();
 
+    // Apply mTLS client certificate to Qt's SSL stack for all HTTPS requests
+    {
+        QString cert, key;
+        seafApplet->rpcClient()->seafileGetConfig("ssl_client_cert", &cert);
+        seafApplet->rpcClient()->seafileGetConfig("ssl_client_key", &key);
+        NetworkManager::applyMtlsCert(cert, key);
+    }
+
     autoStart_ = get_seafile_auto_start();
 
     QSettings settings;
@@ -611,11 +619,13 @@ QString SettingsManager::sslClientKey() const
 void SettingsManager::setSslClientCert(const QString& path)
 {
     seafApplet->rpcClient()->seafileSetConfig("ssl_client_cert", path);
+    NetworkManager::applyMtlsCert(path, sslClientKey());
 }
 
 void SettingsManager::setSslClientKey(const QString& path)
 {
     seafApplet->rpcClient()->seafileSetConfig("ssl_client_key", path);
+    NetworkManager::applyMtlsCert(sslClientCert(), path);
 }
 
 bool SettingsManager::isEnableSyncingWithExistingFolder() const

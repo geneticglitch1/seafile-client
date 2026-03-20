@@ -5,6 +5,9 @@
 #include <QSslConfiguration>
 #include <QSslSocket>
 #include <QSslCipher>
+#include <QSslCertificate>
+#include <QSslKey>
+#include <QFile>
 #include <QTimer>
 #include <QMutexLocker>
 
@@ -131,6 +134,29 @@ void loadUserCaCertificate()
 }
 #endif
 } // anonymous namespace
+
+// static
+void NetworkManager::applyMtlsCert(const QString& certPath, const QString& keyPath)
+{
+    if (certPath.isEmpty() || keyPath.isEmpty())
+        return;
+
+    QFile certFile(certPath);
+    QFile keyFile(keyPath);
+    if (!certFile.open(QIODevice::ReadOnly) || !keyFile.open(QIODevice::ReadOnly))
+        return;
+
+    QSslCertificate cert(&certFile, QSsl::Pem);
+    QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem);
+
+    if (cert.isNull() || key.isNull())
+        return;
+
+    QSslConfiguration config = QSslConfiguration::defaultConfiguration();
+    config.setLocalCertificate(cert);
+    config.setPrivateKey(key);
+    QSslConfiguration::setDefaultConfiguration(config);
+}
 
 NetworkManager* NetworkManager::instance_ = NULL;
 

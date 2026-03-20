@@ -25,6 +25,7 @@ public:
     void addWatch(QNetworkAccessManager* manager);
     void applyProxy(const QNetworkProxy& proxy);
     void reapplyProxy();
+    static void applyMtlsCert(const QString& certPath, const QString& keyPath);
 
     // retry only once
     bool shouldRetry(const QNetworkReply::NetworkError error) {
