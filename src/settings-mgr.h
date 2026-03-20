@@ -93,6 +93,11 @@ public:
     void setHttpSyncCertVerifyDisabled(bool disabled);
     bool httpSyncCertVerifyDisabled() const { return verify_http_sync_cert_disabled_; };
 
+    QString sslClientCert() const;
+    QString sslClientKey() const;
+    void setSslClientCert(const QString& path);
+    void setSslClientKey(const QString& path);
+
     QString getComputerName();
     void setComputerName(const QString& computerName);
 

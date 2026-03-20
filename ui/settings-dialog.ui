@@ -531,6 +531,55 @@
          </layout>
         </item>
         <item>
+         <layout class="QFormLayout" name="formLayoutMtls">
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mSslCertLabel">
+            <property name="text">
+             <string>Client Certificate (.pem)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="certRowLayout">
+            <item>
+             <widget class="QLineEdit" name="mSslCertPath"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mSslCertBrowse">
+              <property name="text">
+               <string>Browse...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mSslKeyLabel">
+            <property name="text">
+             <string>Client Key (.key)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="keyRowLayout">
+            <item>
+             <widget class="QLineEdit" name="mSslKeyPath"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mSslKeyBrowse">
+              <property name="text">
+               <string>Browse...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>

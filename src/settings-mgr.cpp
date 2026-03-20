@@ -594,6 +594,30 @@ void SettingsManager::setHttpSyncCertVerifyDisabled(bool disabled)
     }
 }
 
+QString SettingsManager::sslClientCert() const
+{
+    QString value;
+    seafApplet->rpcClient()->seafileGetConfig("ssl_client_cert", &value);
+    return value;
+}
+
+QString SettingsManager::sslClientKey() const
+{
+    QString value;
+    seafApplet->rpcClient()->seafileGetConfig("ssl_client_key", &value);
+    return value;
+}
+
+void SettingsManager::setSslClientCert(const QString& path)
+{
+    seafApplet->rpcClient()->seafileSetConfig("ssl_client_cert", path);
+}
+
+void SettingsManager::setSslClientKey(const QString& path)
+{
+    seafApplet->rpcClient()->seafileSetConfig("ssl_client_key", path);
+}
+
 bool SettingsManager::isEnableSyncingWithExistingFolder() const
 {
     bool enabled;

@@ -3,6 +3,8 @@
 #include <QtWidgets>
 #include <QDebug>
 #include <QSettings>
+#include <QFileDialog>
+#include <QDir>
 
 #include "i18n.h"
 #include "account-mgr.h"
@@ -54,6 +56,20 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 #endif
 
     connect(mOkBtn, SIGNAL(clicked()), this, SLOT(onOkBtnClicked()));
+    connect(mSslCertBrowse, &QPushButton::clicked, this, [this]() {
+        QString path = QFileDialog::getOpenFileName(this, tr("Select Client Certificate"),
+                                                    QDir::homePath(),
+                                                    tr("PEM Files (*.pem *.crt);;All Files (*)"));
+        if (!path.isEmpty())
+            mSslCertPath->setText(path);
+    });
+    connect(mSslKeyBrowse, &QPushButton::clicked, this, [this]() {
+        QString path = QFileDialog::getOpenFileName(this, tr("Select Client Key"),
+                                                    QDir::homePath(),
+                                                    tr("Key Files (*.key *.pem);;All Files (*)"));
+        if (!path.isEmpty())
+            mSslKeyPath->setText(path);
+    });
 }
 
 void SettingsDialog::setCurrentTab(int index)
@@ -73,6 +89,8 @@ void SettingsDialog::updateSettings()
     mgr->setHideMainWindowWhenStarted(mHideMainWinCheckBox->checkState() == Qt::Checked);
     mgr->setAllowInvalidWorktree(mAllowInvalidWorktreeCheckBox->checkState() == Qt::Checked);
     mgr->setHttpSyncCertVerifyDisabled(mDisableVerifyHttpSyncCert->checkState() == Qt::Checked);
+    mgr->setSslClientCert(mSslCertPath->text().trimmed());
+    mgr->setSslClientKey(mSslKeyPath->text().trimmed());
     mgr->setAllowRepoNotFoundOnServer(mAllowRepoNotFoundCheckBox->checkState() == Qt::Checked);
     mgr->setDeleteConfirmThreshold(mDeleteConfirmSpinBox->value());
 #ifdef HAVE_FINDER_SYNC_SUPPORT
@@ -135,6 +153,9 @@ void SettingsDialog::showEvent(QShowEvent *event)
 
     state = mgr->httpSyncCertVerifyDisabled() ? Qt::Checked : Qt::Unchecked;
     mDisableVerifyHttpSyncCert->setCheckState(state);
+
+    mSslCertPath->setText(mgr->sslClientCert());
+    mSslKeyPath->setText(mgr->sslClientKey());
 
     // currently supports windows only
     state = mgr->autoStart() ? Qt::Checked : Qt::Unchecked;
